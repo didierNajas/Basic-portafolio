@@ -33,16 +33,16 @@
 
 /* ==================== TEMA CLARO ==================== */
 [data-theme="light"] {
-    --primary-color: #ffffff;
-    --secondary-color: #f8f6ff;
-    --accent-color: #7c3aed;
-    --accent-dark: #6d28d9;
-    --accent-light: #e9d5ff;
-    --accent-teal: #059669;
-    --accent-teal-dark: #047857;
-    --text-light: #120a2b;
-    --text-muted: #3730a3;
-    --success-color: #059669;
-    --danger-color: #dc2626;
-    --card-bg: rgba(255, 255, 255, 0.7);
+    --primary-color: #016864;
+    --secondary-color: #27b9d2;
+    --accent-color: #c0c5d4;
+    --accent-dark: #69cbb1;
+    --accent-light: #ffffff;
+    --accent-teal: #94b4bf;
+    --accent-teal-dark: #76c9c3;
+    --text-light: #f1eaea;
+    --text-muted: #e6e4f0;
+    --success-color: #6ee7b7;
+    --danger-color: #ff0026;
+    --card-bg: rgba(228, 221, 237, 0.7);
 }
