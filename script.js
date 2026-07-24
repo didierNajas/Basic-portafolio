@@ -121,6 +121,33 @@ function loadComponent(url) {
 function initPage() {
     // Ahora que los componentes están cargados, podemos configurar los event listeners y otras inicializaciones
 
+    // ==================== SMOOTH SCROLLING PARA ANCHORS ====================
+    // Manejar clics en enlaces ancla para scroll suave
+    document.addEventListener('click', function(e) {
+        const anchor = e.target.closest('a[href^="#"]');
+        if (anchor) {
+            e.preventDefault();
+            const targetId = anchor.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                // Scroll suave con offset para compensar header fijo
+                const headerOffset = 80; // Altura aproximada del header
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+                
+                // Actualizar URL sin hacer salto
+                history.pushState(null, null, targetId);
+            }
+        }
+    });
+
     // ==================== CAMBIO DE IDIOMA ====================
     const languageToggle = document.getElementById('lang-toggle');
     if (languageToggle) {
@@ -445,12 +472,13 @@ function initPage() {
 
         const components = [
             { id: 'header-component', url: baseUrl + 'components/header.html' },
-            { id: 'hero-component',   url: baseUrl + 'components/hero.html' },
-            { id: 'stats-component',  url: baseUrl + 'components/stats.html' },
-            { id: 'about-component',  url: baseUrl + 'components/about.html' },
-            { id: 'skills-component', url: baseUrl + 'components/skills.html' },
-            { id: 'projects-component', url: baseUrl + 'components/projects.html' },
-            { id: 'contact-component', url: baseUrl + 'components/contact.html' },
+            { id: 'inicio', url: baseUrl + 'components/hero.html' },
+            { id: 'stats-component', url: baseUrl + 'components/stats.html' },
+            { id: 'sobre-mi', url: baseUrl + 'components/about.html' },
+            { id: 'experiencia', url: baseUrl + 'components/experience.html' },
+            { id: 'habilidades', url: baseUrl + 'components/skills.html' },
+            { id: 'proyectos', url: baseUrl + 'components/projects.html' },
+            { id: 'contacto', url: baseUrl + 'components/contact.html' },
             { id: 'footer-component',  url: baseUrl + 'components/footer.html' },
             { id: 'modals-component',  url: baseUrl + 'components/modals.html' }
         ];
