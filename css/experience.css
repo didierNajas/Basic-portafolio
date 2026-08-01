@@ -75,7 +75,7 @@
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    padding: 1.5rem;
+    padding: 1.25rem;
     transition: all 0.3s ease;
     height: 100%;
 }
@@ -88,31 +88,34 @@
     align-items: flex-start;
 }
 #experiencia .certification-card h5 {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.35rem;
+    margin-bottom: 0.75rem;
     color: var(--text-light);
+    font-weight: 600;
+    line-height: 1.3;
 }
 #experiencia .certification-card p {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     color: white;
     font-size: 0.9rem;
+    line-height: 1.5;
 }
 #experiencia .certification-card .btn-primary {
-    background: var(--primary);
+        background: linear-gradient(135deg, rgb(95, 19, 171), var(--accent-teal-dark));
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.2rem 4rem;
     font-size: 0.9rem;
     transition: all 0.3s ease;
 }
 #experiencia .certification-card .btn-primary:hover {
-    background: var(--primary-dark);
+    background: linear-gradient(135deg, rgb(19, 146, 171), rgb(110, 34, 197));
     transform: translateY(-2px);
 }
 
 /* Certificates section */
 #experiencia .certificates .certificates-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, fr));
     gap: 20px;
     margin-top: 30px;
 }
@@ -178,4 +181,9 @@
     #experiencia .timeline-content:after {
         display: none;
     }
+}
+
+/* Text color for mb-1 text-muted small elements */
+.mb-1.text-muted.small {
+    color: white !important;
 }

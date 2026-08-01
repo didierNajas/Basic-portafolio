@@ -181,48 +181,194 @@ h3 {
 }
 
 /* ==================== RESPONSIVE ==================== */
-@media (max-width: 768px) {
+/* Extra large devices (large laptops and desktops, 1440px and up) */
+@media (min-width: 1440px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    h1 {
+        font-size: 4rem;
+    }
+    
+    h2 {
+        font-size: 2.75rem;
+    }
+    
+    .section-spacing {
+        padding: 8rem 0;
+    }
+}
+
+/* Large devices (laptops/desktops, 1024px and up) */
+@media (min-width: 1024px) {
+    h1 {
+        font-size: 3.5rem;
+    }
+    
+    h2 {
+        font-size: 2.5rem;
+    }
+    
+    .section-spacing {
+        padding: 6rem 0;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    h1 {
+        font-size: 3rem;
+    }
+    
+    h2 {
+        font-size: 2.2rem;
+    }
+    
+    .hero-section {
+        margin-top: 80px;
+        padding: 3rem 0;
+    }
+    
+    .profile-image {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .cta-buttons {
+        flex-direction: row;
+        gap: 1rem;
+    }
+    
+    .btn-gradient,
+    .btn-outline-light {
+        width: auto;
+    }
+    
+    .section-spacing {
+        padding: 5rem 0;
+    }
+    
+    .experience-highlights {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .contact-links {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Small devices (landscape phones, 480px and up) */
+@media (min-width: 480px) {
     h1 {
         font-size: 2.5rem;
     }
-
+    
     h2 {
         font-size: 1.8rem;
     }
-
+    
     .hero-section {
         margin-top: 60px;
         padding: 2rem 0;
     }
-
+    
     .profile-image {
         width: 200px;
         height: 200px;
     }
-
+    
     .cta-buttons {
         flex-direction: column;
     }
-
+    
     .btn-gradient,
     .btn-outline-light {
         width: 100%;
         text-align: center;
     }
-
+    
     .nav-link {
         margin-left: 0.5rem;
     }
-
+    
     .section-spacing {
         padding: 3rem 0;
     }
-
+    
     .experience-highlights {
         grid-template-columns: 1fr;
     }
-
+    
     .contact-links {
         grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Extra small devices (portrait phones, less than 480px) */
+@media (max-width: 479px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-section {
+        margin-top: 50px;
+        padding: 1.5rem 0;
+    }
+    
+    .profile-image {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-gradient,
+    .btn-outline-light {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .nav-link {
+        margin-left: 0.3rem;
+        font-size: 0.9rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .navbar-toggler {
+        margin: 0;
+    }
+    
+    .section-spacing {
+        padding: 2rem 0;
+    }
+    
+    .section-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .lead {
+        font-size: 1rem;
+    }
+    
+    /* Adjust navbar brand */
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .brand-logo {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .brand-initials {
+        font-size: 0.8rem;
     }
 }

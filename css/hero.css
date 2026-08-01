@@ -96,7 +96,7 @@
 
 .btn-outline-light {
     color: var(--text-light) !important;
-    border: 2px solid var(--text-light);
+    border: 2px solid var(--accent-color);
     padding: 10px 28px;
     font-weight: 600;
     border-radius: 50px;
@@ -107,9 +107,8 @@
 }
 
 .btn-outline-light:hover {
-    background: var(--accent-color);
     border-color: var(--accent-color);
-    color: white !important;
+    color: rgb(9, 9, 9) !important;
 }
 
 /* Profile container styles */
