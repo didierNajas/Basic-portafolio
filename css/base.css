@@ -118,7 +118,7 @@ h3 {
 .lead.text-muted,
 .hero-content .lead,
 .hero-content p {
-    color: var(--text-light) !important;
+    color: white !important;
 }
 
 /* ==================== SECCIONES ==================== */
