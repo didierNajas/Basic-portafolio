@@ -18,7 +18,7 @@
     top: 0;
     bottom: 0;
     width: 2px;
-    background: var(--primary, #ff6b6b);
+    background: var(--primary, #4bc8e4);
 }
 #experiencia .timeline-item {
     position: relative;
@@ -39,7 +39,7 @@
     transform: translateY(-50%);
     width: 16px;
     height: 16px;
-    background: var(--primary, #ff6b6b);
+    background: var(--primary, #8448f5);
     border-radius: 50%;
 }
 #experiencia .timeline-title {
@@ -55,7 +55,7 @@
 #experiencia .timeline-company {
     font-weight: 600;
     margin-bottom: 1rem;
-    color: var(--primary, #ff6b6b);
+    color: var(--primary, #3cacd9);
     font-size: 1.1rem;
 }
 #experiencia .timeline-date {
