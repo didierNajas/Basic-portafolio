@@ -59,7 +59,7 @@
 }
 
 .nav-link {
-    color: var(--text-muted) !important;
+    color: var(--text-light) !important;
     font-weight: 500;
     position: relative;
     transition: var(--transition);
@@ -67,7 +67,7 @@
 
 .nav-link:hover,
 .nav-link.active {
-    color: var(--accent-color) !important;
+    color: var(--accent-teal) !important;
 }
 
 .nav-link::after {
@@ -77,7 +77,7 @@
     left: 0;
     width: 0;
     height: 2px;
-    background: var(--accent-color);
+    background: var(--accent-teal);
     transition: var(--transition);
 }
 
