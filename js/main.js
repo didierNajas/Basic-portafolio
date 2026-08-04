@@ -1,5 +1,7 @@
-// ==================== CONFIGURACIÓN INICIAL ====================
-// Guard para localStorage bloqueado por Tracking Prevention (Edge/Firefox)
+// Main application entry point
+// Import utilities (these will be available globally via window object from individual files)
+
+// Safe storage utilities
 function safeStorage(key, fallback) {
     try { return localStorage.getItem(key) || fallback; }
     catch (_) { return fallback; }
@@ -8,14 +10,33 @@ function safeStorageSet(key, value) {
     try { localStorage.setItem(key, value); } catch (_) { /* silencioso */ }
 }
 
-let currentLanguage = safeStorage('language', 'es');
-let currentTheme    = safeStorage('theme', 'dark');
+// Initialize global state
+// Initialize language and theme
+initLanguage();
+initTheme();
 
-// Aplicar tema y idioma al cargar (los elementos body y html están en el HTML inicial)
-document.body.setAttribute('data-theme', currentTheme);
-document.documentElement.setAttribute('data-lang', currentLanguage);
+// Initialize modules
+function initModules() {
+    // Initialize theme
+    if (window.initTheme) {
+        currentTheme = window.initTheme();
+    }
+    
+    // Initialize typed effect
+    if (window.initTypedEffect) {
+        window.initTypedEffect();
+    }
+    
+    // Initialize theme icon
+    if (window.updateThemeIcon) {
+        window.updateThemeIcon();
+    }
+    
+    // Initialize language toggle button
+    updateLanguageToggleButton();
+}
 
-// ==================== CAMBIO DE IDIOMA ====================
+// Language management
 function updateLanguage() {
     document.querySelectorAll('[data-es][data-en]').forEach(element => {
         // Skip the typing effect element as we handle it separately
@@ -36,10 +57,12 @@ function updateLanguage() {
     });
     
     // Re-initialize typing effect when language changes
-    initTypedEffect();
+    if (window.initTypedEffect) {
+        window.initTypedEffect();
+    }
 }
 
-function updateToggleButton() {
+function updateLanguageToggleButton() {
     const languageToggle = document.getElementById('lang-toggle');
     if (languageToggle) {
         languageToggle.innerHTML = currentLanguage === 'es'
@@ -48,67 +71,21 @@ function updateToggleButton() {
     }
 }
 
-// ==================== CAMBIO DE TEMA ====================
-function updateThemeIcon() {
-    const themeToggle = document.getElementById('theme-toggle');
-    if (!themeToggle) return;
-    const icon = themeToggle.querySelector('i');
-    if (currentTheme === 'dark') {
-        icon.classList.replace('fa-sun', 'fa-moon');
-    } else {
-        icon.classList.replace('fa-moon', 'fa-sun');
+// Theme management
+function updateTheme() {
+    if (window.updateThemeIcon) {
+        window.updateThemeIcon();
     }
 }
 
-// ==================== EFECTO DE MÁQUINA DE ESCRIBIR ====================
-function initTypedEffect() {
-    const typedElement = document.getElementById('typed-greeting');
-    if (!typedElement) return;
-
-    const text = currentLanguage === 'es'
-        ? typedElement.getAttribute('data-es')
-        : typedElement.getAttribute('data-en');
-
-    // Destroy existing instance if any
-    if (window.typedInstance) {
-        window.typedInstance.destroy();
-    }
-
-    // Initialize Typed.js
-    window.typedInstance = new Typed('#typed-greeting', {
-        strings: [text],
-        typeSpeed: 50,
-        backSpeed: 30,
-        backDelay: 1500,
-        startDelay: 500,
-        loop: false,
-        showCursor: true,
-        cursorChar: '|',
-        autoInsertCss: true,
-    });
-}
-
-// ==================== NOTIFICACIONES ====================
+// Notification function (wrapper)
 function showNotification(message, type = 'info') {
-    const colors = { success: '#10b981', error: '#ff1744', info: '#a855f7' };
-    const el = document.createElement('div');
-    el.textContent = message;
-    el.style.cssText = `
-        position:fixed; top:100px; right:20px;
-        padding:1rem 1.5rem;
-        background:${colors[type] || colors.info};
-        color:white; border-radius:8px; font-weight:600;
-        z-index:10000; box-shadow:0 10px 25px rgba(0,0,0,.2);
-        animation:slideIn 0.3s ease;
-    `;
-    document.body.appendChild(el);
-    setTimeout(() => {
-        el.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => el.remove(), 300);
-    }, 3000);
+    if (window.showNotification) {
+        window.showNotification(message, type);
+    }
 }
 
-// Función para cargar un componente y devolver una promesa con su texto
+// Component loading
 function loadComponent(url) {
     return fetch(url)
         .then(response => {
@@ -117,12 +94,12 @@ function loadComponent(url) {
         });
 }
 
-// Función de inicialización que se ejecuta después de cargar todos los componentes
 function initPage() {
-    // Ahora que los componentes están cargados, podemos configurar los event listeners y otras inicializaciones
+    // Cache frequently used elements
+    const languageToggle = document.getElementById('lang-toggle');
+    const themeToggle = document.getElementById('theme-toggle');
 
     // ==================== SMOOTH SCROLLING PARA ANCHORS ====================
-    // Manejar clics en enlaces ancla para scroll suave
     document.addEventListener('click', function(e) {
         const anchor = e.target.closest('a[href^="#"]');
         if (anchor) {
@@ -132,8 +109,7 @@ function initPage() {
             
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-                // Scroll suave con offset para compensar header fijo
-                const headerOffset = 80; // Altura aproximada del header
+                const headerOffset = 80;
                 const elementPosition = targetElement.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
                 
@@ -142,42 +118,41 @@ function initPage() {
                     behavior: 'smooth'
                 });
                 
-                // Actualizar URL sin hacer salto
                 history.pushState(null, null, targetId);
             }
         }
     });
 
     // ==================== CAMBIO DE IDIOMA ====================
-    const languageToggle = document.getElementById('lang-toggle');
     if (languageToggle) {
         languageToggle.addEventListener('click', () => {
             currentLanguage = currentLanguage === 'es' ? 'en' : 'es';
             document.documentElement.setAttribute('data-lang', currentLanguage);
             safeStorageSet('language', currentLanguage);
             updateLanguage();
-            updateToggleButton();
+            updateLanguageToggleButton();
         });
     }
 
     // ==================== CAMBIO DE TEMA ====================
-    const themeToggle = document.getElementById('theme-toggle');
     if (themeToggle) {
         themeToggle.addEventListener('click', () => {
             currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
             document.body.setAttribute('data-theme', currentTheme);
             safeStorageSet('theme', currentTheme);
-            updateThemeIcon();
+            updateTheme();
         });
     }
 
-    // Ejecutar actualizaciones iniciales de idioma y tema (ahora que los elementos existen)
+    // Execute initial updates
     updateLanguage();
-    updateToggleButton();
-    updateThemeIcon();
+    updateLanguageToggleButton();
+    updateTheme();
     
-    // Inicializar efecto de máquina de escribir
-    initTypedEffect();
+    // Initialize typed effect
+    if (window.initTypedEffect) {
+        window.initTypedEffect();
+    }
 
     // ==================== ANIMACIÓN DE ESTADÍSTICAS ====================
     document.addEventListener('DOMContentLoaded', () => {
@@ -188,29 +163,22 @@ function initPage() {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
                     const rawValue = entry.target.getAttribute('data-value') || '0';
-                    const target   = parseInt(rawValue) || 0;
-                    const suffix   = rawValue.includes('+') ? '+' : '';
-                    let current    = 0;
-                    const increment = target / 60;
-
-                    const counter = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            entry.target.textContent = target + suffix;
-                            entry.target.classList.add('animated');
-                            clearInterval(counter);
-                        } else {
-                            entry.target.textContent = Math.floor(current) + suffix;
-                        }
-                    }, 30);
-
+                    const target = parseInt(rawValue) || 0;
+                    const suffix = rawValue.includes('+') ? '+' : '';
+                    
+                    entry.target.classList.add('animated');
+                    
+                    // Animate the counter
+                    if (window.animateCounter) {
+                        window.animateCounter(entry.target, target, suffix);
+                    }
+                    
                     observer.unobserve(entry.target);
                 }
             });
         }, { threshold: 0.3 });
 
         statNumbers.forEach(stat => {
-            // Si ya está en el viewport al cargar, forzar el conteo igualmente
             const rect = stat.getBoundingClientRect();
             if (rect.top < window.innerHeight) {
                 stat.dispatchEvent(new Event('forceAnimate'));
@@ -220,7 +188,6 @@ function initPage() {
     });
 
     // ==================== EMAILJS + FORMULARIO ====================
-    // EmailJS se inicializa solo si el script está cargado
     if (typeof emailjs !== 'undefined') {
         emailjs.init('imMlDc-9gQwzPoKo0');
     }
@@ -230,8 +197,8 @@ function initPage() {
         contactForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const name    = document.getElementById('name').value.trim();
-            const email   = document.getElementById('email').value.trim();
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
             const subject = document.getElementById('subject').value.trim();
             const message = document.getElementById('message').value.trim();
 
@@ -252,18 +219,18 @@ function initPage() {
                 return;
             }
 
-            const submitBtn  = contactForm.querySelector('button[type="submit"]');
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.textContent = currentLanguage === 'es' ? 'Enviando...' : 'Sending...';
 
             const templateParams = {
-                from_name : name,
-                reply_to  : email,
-                subject   : subject,
-                message   : message,
-                to_name   : 'Didier Najas',
-                to_email  : 'didiernajas2006@gmail.com'
+                from_name: name,
+                reply_to: email,
+                subject: subject,
+                message: message,
+                to_name: 'Didier Najas',
+                to_email: 'didiernajas2006@gmail.com'
             };
 
             if (typeof emailjs === 'undefined') {
@@ -305,8 +272,6 @@ function initPage() {
     }
 
     // ==================== ANIMACIONES DE SCROLL ====================
-    // IMPORTANTE: NO se aplica pointer-events:none a las cards para no bloquear
-    // los botones y links internos en GitHub Pages.
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -324,21 +289,42 @@ function initPage() {
     });
 
     // ==================== NAVBAR ACTIVA SEGÚN SCROLL ====================
-    window.addEventListener('scroll', () => {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+    
+    const updateActiveNavLink = () => {
         let current = '';
-        document.querySelectorAll('section[id]').forEach(section => {
-            if (window.pageYOffset >= section.offsetTop - 200) {
+        const scrollPosition = window.pageYOffset;
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 200;
+            const sectionBottom = sectionTop + section.offsetHeight;
+            if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
                 current = section.getAttribute('id');
             }
         });
 
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.classList.toggle(
-                'active',
-                link.getAttribute('href') === `#${current}`
-            );
+        navLinks.forEach(link => {
+            const isActive = link.getAttribute('href') === `#${current}`;
+            link.classList.toggle('active', isActive);
         });
-    });
+    };
+
+    // Throttle for performance
+    function throttle(fn, delay) {
+        let lastExec = 0;
+        return function (...args) {
+            const now = Date.now();
+            if (now - lastExec >= delay) {
+                fn.apply(this, args);
+                lastExec = now;
+            }
+        };
+    }
+
+    const throttledUpdateNav = throttle(updateActiveNavLink, 100);
+    window.addEventListener('scroll', throttledUpdateNav);
+    updateActiveNavLink(); // Initial call
 
     // ==================== CERRAR NAVBAR EN MÓVIL ====================
     document.querySelectorAll('.nav-link').forEach(link => {
@@ -361,7 +347,6 @@ function initPage() {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
             if (href === '#') return;
-            // No interceptar links externos
             if (!href.startsWith('#')) return;
             e.preventDefault();
             const target = document.querySelector(href);
@@ -374,7 +359,6 @@ function initPage() {
     // ==================== ANIMACIONES CSS (inyectadas) ====================
     const style = document.createElement('style');
     style.textContent = `
-        /* Animación de reveal sin bloquear pointer-events */
         .reveal {
             opacity: 0;
             transform: translateY(28px);
@@ -384,7 +368,7 @@ function initPage() {
             opacity: 1;
             transform: translateY(0);
         }
-
+        
         @keyframes slideIn {
             from { transform: translateX(400px); opacity: 0; }
             to   { transform: translateX(0);     opacity: 1; }
@@ -397,7 +381,6 @@ function initPage() {
     document.head.appendChild(style);
 
     // ==================== REVEAL AL CARGAR (elementos ya visibles) ====================
-    // Forzar reveal de elementos que ya están en el viewport al cargar la página
     window.addEventListener('load', () => {
         document.querySelectorAll('.reveal').forEach(el => {
             const rect = el.getBoundingClientRect();
@@ -406,57 +389,44 @@ function initPage() {
             }
         });
 
-        // Fallback para contadores: si la sección ya es visible al cargar, animar ahora
         document.querySelectorAll('.stat-number:not(.animated)').forEach(stat => {
             const rect = stat.getBoundingClientRect();
             if (rect.top < window.innerHeight) {
-                const rawValue  = stat.getAttribute('data-value') || '0';
-                const target    = parseInt(rawValue) || 0;
-                const suffix    = rawValue.includes('+') ? '+' : '';
-                let current     = 0;
-                const increment = target / 60;
+                const rawValue = stat.getAttribute('data-value') || '0';
+                const target = parseInt(rawValue) || 0;
+                const suffix = rawValue.includes('+') ? '+' : '';
                 stat.classList.add('animated');
-                const counter = setInterval(() => {
-                    current += increment;
-                    if (current >= target) {
-                        stat.textContent = target + suffix;
-                        clearInterval(counter);
-                    } else {
-                        stat.textContent = Math.floor(current) + suffix;
-                    }
-                }, 30);
+                if (window.animateCounter) {
+                    window.animateCounter(stat, target, suffix);
+                }
             }
         });
     });
 
-    // Fallback de seguridad: si tras 2s algún elemento sigue oculto, forzarlo visible
+    // Fallback de seguridad
     setTimeout(() => {
         document.querySelectorAll('.reveal:not(.visible)').forEach(el => {
             el.classList.add('visible');
         });
     }, 2000);
-
-
 }
 
-// Cargar componentes y luego inicializar
-(function () {
-    // Esperar a que el DOM esté listo para que los placeholders existan
-    function domReady() {
-        return new Promise((resolve) => {
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', resolve);
-            } else {
-                resolve();
-            }
-        });
-    }
+// Utility function for DOM ready
+function domReady() {
+    return new Promise((resolve) => {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', resolve);
+        } else {
+            resolve();
+        }
+    });
+}
 
+// Main initialization
+(function () {
     domReady().then(() => {
-        // Use base URL set in HTML (via <base> tag) or fallback to computed
         let baseUrl = window.baseUrl || '';
         if (!baseUrl) {
-            // Fallback: compute base URL from current script or page location
             const script = document.currentScript;
             if (script && script.src) {
                 try {
@@ -496,10 +466,17 @@ function initPage() {
 
         Promise.all(promises)
             .then(() => {
+                initModules();
                 initPage();
             })
-            .catch(err => {
-                console.error('Error loading components:', err);
+            .catch(error => {
+                console.error('Error loading components:', error);
+                showNotification(
+                    currentLanguage === 'es' 
+                        ? 'Error al cargar componentes. Recarga la página.' 
+                        : 'Error loading components. Please reload the page.',
+                    'error'
+                );
             });
     });
 })();
